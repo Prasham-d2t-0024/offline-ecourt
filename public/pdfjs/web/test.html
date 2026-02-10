@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body style="overflow: auto;">
+		<iframe id='my-pdfjs-iframe' class='sticky-container' src="viewer.html?file=example_new_link.pdf"
+			frameborder="0" width="100%" height="720px"></iframe>
+	</body>
+	<script type="text/javascript">
+		window.onload = function() {
+			// return;
+			var windowWidth = document.documentElement.scrollWidth;
+			var windowHeight = document.documentElement.clientHeight-30;
+			var pdf_iframe=document.getElementById('my-pdfjs-iframe');
+			// console.log('高度',windowHeight);
+			pdf_iframe.height=windowHeight.toString()+'px';
+		}
+	</script>
+</html>

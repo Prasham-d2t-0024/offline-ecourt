@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body
+		style="display: flex;background-color:#1CBBB4; width: 100%;height: 100%;align-items: center;justify-content: center;">
+		<div style="position: fixed;top: 45%;transform: scale(2);">
+			<input type="" name="" id="very_number" value="" />
+			<button type="button" onclick="VeryCode()">Very Code</button>
+		</div>
+		<!-- 		<iframe src="web/custom_viewer.html?file=example_new.pdf" frameborder="0" width="100%"
+			height="720px"></iframe> -->
+	</body>
+	<script type="text/javascript">
+		function VeryCode() {
+			var very_number = document.getElementById('very_number').value;
+			if (very_number == '2023710') {
+				// console.log('验证成功');
+				// alert('验证成功，点击确认后将跳转');
+				location.href = "web/test.html"
+			}else{
+				alert('please input right code')
+			}
+		}
+	</script>
+</html>

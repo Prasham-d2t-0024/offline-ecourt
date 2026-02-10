@@ -1,0 +1,538 @@
+.licursor {
+  cursor: pointer;
+}
+
+p {
+  font-family: Lato;
+}
+
+.dot-sm {
+  font-size: 9px;
+}
+
+.tabs-container {
+  position: relative;
+  height: 50px;
+  padding: 0 2em;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+  margin-bottom: 3px;
+  border: none;
+}
+
+.tabs {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  flex-wrap: no-wrap;
+  transform: translateX(0px);
+  transition: transform 300ms ease-in-out;
+}
+
+.tab {
+  width: 165px;
+  height: 100%;
+  padding-bottom: 1em;
+  margin: 0 20px;
+  flex-shrink: 0;
+  text-align: center;
+  border-bottom: 4px solid transparent;
+  cursor: pointer;
+}
+
+.tab.active {
+  border-bottom-color: #207698;
+  transition: all 300ms linear;
+  background: #f0f8ff;
+  border-radius: 0.25rem;
+}
+
+.change-btn {
+  height: 50px;
+  width: 2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none !important;
+  border-radius: 4px;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+  background: white;
+  cursor: pointer;
+}
+
+.change-btn.hide {
+  cursor: not-allowed;
+  pointer-events: none;
+  color: #b5b5b5;
+}
+
+.change-btn.prev {
+  left: 0;
+}
+
+.change-btn.next {
+  right: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+.rowEcourt {
+  background: #f0f8ff;
+  border-radius: 0.25rem;
+  border-bottom: 3px solid transparent;
+  border-block-color: #0060a2;
+  padding-block-start: 5px;
+  padding-block-end: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+  border-radius: 10px;
+}
+
+.rowEcourt-has-order {
+  background: #f0f8ff;
+  border-radius: 0.25rem;
+  border-bottom: 3px solid transparent;
+  border-block-color: #0060a2;
+  padding-block-start: 10px;
+  padding-block-end: 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+  border-radius: 10px;
+}
+
+.liEcourt {
+  border-radius: 0.25rem;
+  text-align: left !important;
+  border-right: 4px solid #0060a2;
+  border-left: 4px solid #0060a2;
+}
+
+.calander {
+  color: #008edd;
+  border-color: #008edd;
+}
+
+.groupbody {
+  width: 68%;
+  margin-left: 5%;
+}
+
+.datetextbox {
+  border: none !important;
+  background-color: #fff;
+  border-color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.afterclick {
+  color: #0060a2;
+}
+
+.beforclick {
+  color: #343a40;
+}
+
+pdf-viewer {
+  display: block;
+  height: 100vh;
+}
+
+.card-body {
+  -webkit-box-flex: 1;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 0.25rem;
+}
+
+.container {
+  border: 1px solid black;
+  display: grid;
+  grid-template-rows: auto calc(100vh - 38.4px);
+}
+
+.close {
+  font-size: 1.4rem;
+  opacity: 0.1;
+  transition: opacity 0.3s;
+}
+
+.nav-link:hover>.close {
+  opacity: 0.8;
+}
+
+.spanclik {
+  cursor: pointer;
+  color: #207698;
+}
+
+.spanclik:hover {
+  text-decoration: underline;
+}
+
+.trim-info {
+  max-width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 15px;
+  position: relative;
+}
+
+/* new layout css blow */
+.img-css {
+  height: 20px;
+}
+
+.title-css {
+  color: #44b556;
+  border-left: solid;
+  border-color: #44b556;
+  border-width: 5px;
+}
+
+a {
+  color: #474e8b;
+}
+
+.leftArrow {
+  position: fixed;
+  height: 20vh;
+  z-index: 5;
+  top: 40%;
+  margin-left: 1%;
+}
+
+.rightArrow {
+  position: fixed;
+  height: 20vh;
+  z-index: 5;
+  top: 70%;
+  margin-left: 1%;
+}
+
+.leftFull {
+  position: fixed;
+  height: 50vh;
+  z-index: 5;
+  width: 15px;
+  top: 40%;
+}
+
+.rightFull {
+  right: 0;
+  position: fixed;
+  height: 50vh;
+  z-index: 5;
+  width: 15px;
+  top: 15%;
+}
+
+.example-container {
+  width: 500px;
+  height: 300px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.example-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.example-sidenav {
+  padding: 20px;
+}
+
+.rowEcourt {
+  background: #f0f8ff;
+  border-radius: 0.25rem;
+  border-bottom: 3px solid #0060a2;
+}
+
+.container-fluid {
+  max-width: 100%;
+}
+
+.container {
+  max-width: 100% !important;
+}
+
+.sketch-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1em;
+}
+
+.note-skatch {
+  border: 1px solid black;
+}
+
+.col-4.smart-note {
+  position: absolute;
+  right: 0;
+  top: 152px;
+  background-color: #fff;
+  z-index: 9;
+  -webkit-box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  height: 100vh;
+  overflow: overlay;
+  border: 1PX solid #000 26;
+}
+
+.add-button {
+  height: auto !important;
+}
+
+.btn-group ul {
+  display: flex;
+}
+
+.btn-group li {
+  background-color: #0070c0;
+  padding: 10px 8px;
+  border-radius: 10px;
+  width: 100%;
+  border: none;
+  color: #fff;
+  width: 114px;
+  text-align: center;
+  margin-left: 12px;
+}
+
+.button {
+  cursor: pointer;
+}
+
+.btn-group li.red-bg {
+  background-color: #c00000;
+}
+
+#mydivheader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  /* Ensure the header has a background color to cover content below it */
+  border-bottom: 1px solid #ccc;
+  /* Optional: Add a border to separate the header from the content */
+  padding: 0px;
+  /* Adjust padding as needed */
+}
+
+.content-container {
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+  /* Adjust height as needed to fit your layout */
+}
+
+.nav-tabs {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.nav-tabs li {
+  flex: 0 0 auto;
+}
+
+/* Custom scrollbar for webkit browsers (Chrome, Safari) */
+.nav-tabs::-webkit-scrollbar {
+  height: 8px;
+  /* Horizontal scrollbar height */
+}
+
+.nav-tabs::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Track color */
+  border-radius: 10px;
+  /* Rounded corners for the track */
+}
+
+.nav-tabs::-webkit-scrollbar-thumb {
+  background: #888;
+  /* Scrollbar thumb color */
+  border-radius: 10px;
+  /* Rounded corners for the thumb */
+}
+
+.nav-tabs::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Darker color on hover */
+}
+
+/* Custom scrollbar for Firefox */
+.nav-tabs {
+  scrollbar-width: thin;
+  /* Thin scrollbar */
+  scrollbar-color: #888 #f1f1f1;
+  /* Thumb and track color */
+}
+
+.modal-md {
+  margin-right: unset;
+}
+
+.col-lg-4.smart-note {
+  position: absolute;
+  right: 0;
+  top: 152px;
+  background-color: #fff;
+  z-index: 9;
+  -webkit-box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  height: 100vh;
+  overflow: overlay;
+  border: 1PX solid #000 26;
+}
+
+.col-lg-7.smart-note {
+  position: absolute;
+  right: 0;
+  top: 152px;
+  background-color: #fff;
+  z-index: 9;
+  -webkit-box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  box-shadow: 0px 3px 30px rgba(0, 0, 0, 0.12157);
+  height: 100vh;
+  overflow: overlay;
+  border: 1PX solid #000 26;
+}
+
+.modal-dialog.modal-md {
+  margin-right: unset !important;
+}
+
+#mydivheader {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: white;
+  /* Ensure the header has a background color to cover content below it */
+  border-bottom: 1px solid #ccc;
+  /* Optional: Add a border to separate the header from the content */
+  padding: 7px 0px;
+  /* Adjust padding as needed */
+}
+
+.main-haeder-picker {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: #e1e1e1 3d;
+  border-bottom: 1px solid #ccc;
+  padding: 0px;
+  height: auto;
+  display: flex !important;
+  justify-content: space-between !important;
+}
+
+.left-band {
+  margin-left: 13px;
+  display: flex;
+  align-items: center;
+}
+
+.left-band button.color-picker {
+  width: 17px !important;
+  height: 17px !important;
+  border: 0px;
+  border: 2px solid #fff;
+  box-shadow: 0px 4px 10px #000 1c;
+}
+
+.eraser-btn {
+  padding: 0;
+  margin-left: 15px;
+  display: flex;
+}
+
+.right-band {
+  display: flex;
+  align-items: center;
+  margin-right: 13px;
+}
+
+.chekbox-band {
+  float: right;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  width: fit-content !important;
+  justify-content: center;
+  padding: 2px 8px;
+  border: 1px solid #eee;
+  border-radius: 7px;
+}
+
+.chekbox-band label {
+  margin: 0;
+  margin-right: 10px;
+}
+
+button#save-button {
+  padding-right: 0;
+  display: flex;
+}
+
+.main-haeder-picker .btn i {
+  font-size: 21px;
+  color: #181818 ad;
+}
+
+.canvas {
+  display: block;
+  overflow: auto;
+  max-height: 75vh;
+  max-width: 31vw;
+  scrollbar-width: thin;
+}
+
+.selected-pen {
+  border: 2px solid gray !important;
+}
+
+ds-canvas-manager.canvses.ng-star-inserted {
+  display: block;
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 80vh;
+  width: 100%;
+  scrollbar-width: thin;
+}
+
+.btn-danger {
+  background-color: #cf4444 !important;
+}
+
+.legend-box {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 1px solid #333;
+  border-radius: 3px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #999;
+  vertical-align: middle;
+}
+
+.cursor {
+  cursor: pointer;
+}
