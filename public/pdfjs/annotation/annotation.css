@@ -131,12 +131,12 @@
 	color: #FFD700;
 }
 
-.op-buttons-container{
+.op-buttons-container {
 	width: 100%;
 	min-height: 32px;
 	/* background-color: #1CBBB4; */
 	display: flex;
-	
+
 }
 
 .annotation-buttons {
@@ -151,9 +151,9 @@
 	/* position: absolute; */
 	/* top: 40%; */
 	/* z-index: 5000000; */
-	padding-right:10px;
+	padding-right: 10px;
 	/* color: #000000; */
-	background-color: rgb(62 158 255);
+	/* background-color: rgb(62 158 255); */
 	/* background-color: rgba(156, 156, 156); */
 	/* background-color: var(--body-bg-color); */
 	/* background-color: var(--toolbar-bg-color); */
@@ -166,7 +166,7 @@
 	/* box-shadow: 0px 2px 5px rgba(255, 255, 255, 1); */
 }
 
-.annotation-buttons div{
+.annotation-buttons div {
 	display: flex;
 	flex-direction: row;
 }
@@ -210,13 +210,13 @@
 	color: #FFD700;
 }
 
-.closeAnnotationListDiv{
+.closeAnnotationListDiv {
 	position: fixed;
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	/* justify-content: space-between; */
-/* 	position: absolute;
+	/* 	position: absolute;
 	top: 0; */
 	width: 100%;
 	height: 32px;
@@ -231,7 +231,7 @@
 	/* background-color: #dddddd; */
 }
 
-.closeAnnotationListDiv div{
+.closeAnnotationListDiv div {
 	border: #000000 2px solid;
 	border-radius: 5px;
 	margin-right: 5px;
@@ -240,7 +240,7 @@
 	height: 20px;
 }
 
-.closeAnnotationListDiv div button{
+.closeAnnotationListDiv div button {
 	background-color: rgba(0, 0, 0, 0);
 }
 
@@ -318,7 +318,7 @@
 	font-size: 13px;
 	border-bottom: solid 0.5px #888888;
 	background-color: #F8f8f8;
-	
+
 	-moz-user-select: none;
 	/*火狐*/
 	-webkit-user-select: none;
@@ -329,8 +329,9 @@
 	/*早期浏览器*/
 	user-select: none;
 }
+
 .page-annotations-container1 {
-	background-color: #aaf8a0!important;
+	background-color: #aaf8a0 !important;
 }
 
 .page-annotations-container:hover {
@@ -521,11 +522,12 @@ canvas,
 	background-color: #dedede;
 }
 
-.my-mouse-move-text{
+.my-mouse-move-text {
 	position: fixed;
-	top:-500px;
-	z-index:100000;
-	background-color:  #FFD700;;
+	top: -500px;
+	z-index: 100000;
+	background-color: #FFD700;
+	;
 	color: #000000;
 	border-radius: 4px;
 	padding: 5px;
@@ -533,16 +535,16 @@ canvas,
 	box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
 }
 
-.link-annotation-item{
+.link-annotation-item {
 	border: 3px dotted red;
 }
 
-.my-annotation-history{
+.my-annotation-history {
 	position: fixed;
-	top:-500px;
+	top: -500px;
 	left: 0px;
 	width: 300px;
-	z-index:100000;
+	z-index: 100000;
 	border-radius: 5px;
 	border: #888888 2px solid;
 }

@@ -84,13 +84,13 @@ ul {
 }
 
 .rowEcourt {
-  background: #f0f8ff;
+  /* background: #f0f8ff; */
   border-radius: 0.25rem;
   border-bottom: 3px solid transparent;
   border-block-color: #0060a2;
   padding-block-start: 5px;
   padding-block-end: 5px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, .5);
+  /* box-shadow: 0 0 5px rgba(0, 0, 0, .5); */
   border-radius: 10px;
 }
 
@@ -535,4 +535,14 @@ ds-canvas-manager.canvses.ng-star-inserted {
 
 .cursor {
   cursor: pointer;
+}
+
+.toc-row-active {
+  background-color: #c7deef;
+  border-left: 3px solid #0060a2;
+  font-weight: 650;
+}
+
+.link-color {
+  color: #207698;
 }

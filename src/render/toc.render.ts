@@ -153,17 +153,35 @@
 
 (window as any).toggleNode = (id: string) => {
     const el = document.getElementById(`node-${id}`);
+    const chevron = document.getElementById(`chevron-${id}`);
     if (!el) return;
-    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+
+    const isExpanding = el.style.display === 'none';
+    el.style.display = isExpanding ? 'block' : 'none';
+
+    if (chevron) {
+        chevron.textContent = isExpanding ? '▾' : '▸';
+    }
 };
 
-(window as any).openTocPdf = (bitstreamId: string) => {
+(window as any).openTocPdf = (bitstreamId: string, rowId: string) => {
     console.log("bitstreamId", bitstreamId);
     const iframe = document.getElementById('pdfViewer') as HTMLIFrameElement;
     if (!iframe) return;
 
-    // const pdfPath = `/pdfs/${bitstreamId}.pdf`;
-    const pdfPath = `/pdfs/sample.pdf`;
+    // Remove previous active highlight
+    document.querySelectorAll('.toc-row-active').forEach(el => {
+        el.classList.remove('toc-row-active');
+    });
+
+    // Add active class to clicked row
+    const activeRow = document.getElementById(`row-${rowId}`);
+    if (activeRow) {
+        activeRow.classList.add('toc-row-active');
+    }
+
+    const pdfPath = `/pdfs/${bitstreamId}.pdf`;
+    // const pdfPath = `/pdfs/sample.pdf`;
     iframe.src = `/pdfviewer.html?file=` + encodeURIComponent(pdfPath);
 };
 
@@ -184,24 +202,25 @@ function renderTOCNode(node: any): string {
     const isLeaf = !!node.bitstream;
 
     return `
-        <li class="rowEcourt mb-1">
+        <li class="rowEcourt mb-1" id="row-${node.id}" style="${!isLeaf ? 'background-color: #FFF;' : 'background-color: #f0f8ff;'}">
 
         <div class="d-flex align-items-center">
 
             <!-- Chevron (TEXT ONLY) -->
             <span
-            class="mr-2 cursor"
-            style="width:16px;display:inline-block;"
+            id="chevron-${node.id}"
+            class="mr-1 ml-1 cursor"
+            style="width:16px;display:inline-block;transform:scale(1.7);"
             ${hasChildren ? `onclick="toggleNode('${node.id}')"` : ''}
             >
-            ${hasChildren ? '▶' : ''}
+            ${hasChildren ? '▸' : ''}
             </span>
 
             <!-- Label -->
             <span
-            class="spanclik"
-            style="font-size:12px;${isLeaf ? 'cursor:pointer;' : ''}"
-            ${isLeaf ? `onclick="openTocPdf('${node.bitstream.id}')"` : ''}
+            class="${isLeaf ? 'spanclik' : 'link-color'}"
+            style="${isLeaf ? 'cursor:pointer;font-size:14px;' : 'font-size:16px;'}"
+            ${isLeaf ? `onclick="openTocPdf('${node.bitstream.id}', '${node.id}')"` : ''}
             >
             ${node.desc || node.documentType?.documenttypename || ''}
             </span>
@@ -256,11 +275,14 @@ export function renderTOCPage(
     activeTab: 'toc' | 'notes' = 'toc'
 ): string {
 
-    // 🔹 auto-load first leaf
+    // auto-load first leaf
     setTimeout(() => {
         const firstLeaf = findFirstLeaf(tree);
-        if (firstLeaf?.bitstream?.id) {
-            (window as any).openTocPdf(firstLeaf.bitstream.id);
+        if (firstLeaf?.bitstream?.id && firstLeaf?.id) {
+            (window as any).openTocPdf(
+                firstLeaf.bitstream.id,
+                firstLeaf.id
+            );
         }
     }, 0);
 
@@ -276,12 +298,6 @@ export function renderTOCPage(
           <a class="nav-link ${activeTab === 'toc' ? 'active' : ''}"
              onclick="switchLeftTab('toc')">
             Table of Content
-          </a>
-        </li>
-        <li class="nav-item cursor">
-          <a class="nav-link ${activeTab === 'notes' ? 'active' : ''}"
-             onclick="switchLeftTab('notes')">
-            Note
           </a>
         </li>
       </ul>

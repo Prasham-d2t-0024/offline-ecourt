@@ -23,8 +23,8 @@ function rerender() {
   `;
   renderCauseSection();
 }
-function openCase(caseId: string) {
-  const url = `/toc.html?case=${encodeURIComponent(caseId)}`;
+function openCase(cino: string) {
+  const url = `/toc.html?cino=${encodeURIComponent(cino)}`;
   window.open(url, '_blank');
 }
 

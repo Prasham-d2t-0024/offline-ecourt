@@ -19,7 +19,7 @@ var pdfAnnotationUI = new pdfwheel.UI({
 })
 
 
-var interval=null;
+var interval = null;
 function loadDetect() {
 	interval = setInterval('loadPdf()', 1000);
 }
@@ -28,24 +28,33 @@ function loadPdf() {
 		// console.info('Loading...');
 	} else {
 		clearInterval(interval);
-		console.info("页数",PDFViewerApplication.pagesCount);
+		console.info("Page Count", PDFViewerApplication.pagesCount);
 	}
 }
 
 pdfAnnotationUI.initControls();
 // main function, load html and listen   主函数
-window.onload = function() {
-	//debugger;
-	// var all_href = location.href;
-	// var file_id = all_href.split('?')[1];
-	// var pdfUrl = file_id.split('=')[1];
-	var pdfUrl = location.href.split('?')[1].split('=')[1].split('content')[0] //+ "content";
-	
-   var pdfUrl1 = pdfUrl.replace('&beforePrint', '');
-	//var pdfUrl = location.href;
-	console.log('pdfUrl',pdfUrl1);
-	window.PDFViewerApplication.open(pdfUrl1); //open pdf 打开pdf文档
-	//监听加载是否完成
+window.onload = function () {
+	const params = new URLSearchParams(window.location.search);
+
+	const token = params.get('headerset');   // "Bearer eyJhbGciOi..."
+	const pdfUrl = params.get('file');       // clean backend URL
+
+	console.log('Token:', token);
+	console.log('PDF URL:', pdfUrl);
+
+	// 🚨 Wait until PDF.js is fully initialized
+	PDFViewerApplication.initializedPromise.then(() => {
+		PDFViewerApplication.open(
+			pdfUrl,                       // ← file (string URL)
+			{
+				httpHeaders: {
+					Authorization: token      // ← JWT HERE
+				}
+			}
+		);
+	});
+
 	loadDetect();
 	pdfAnnotationUI.addPinchListener(); // Listen gesture zoom 监听手势缩放
 
@@ -55,7 +64,7 @@ window.onload = function() {
 	// testSetAllMemberList(); //set member 设置用户
 
 	pdf_viewer = document.getElementById('viewer');
-	pdf_viewer.addEventListener("mouseup", function(event) {
+	pdf_viewer.addEventListener("mouseup", function (event) {
 		listenHighlight();
 	}, true);
 
@@ -65,7 +74,7 @@ window.onload = function() {
 	// }, true);
 
 	//remove listen 监听删除
-	document.addEventListener("keydown", function(event) {
+	document.addEventListener("keydown", function (event) {
 		if (event.shiftKey) {
 			shiftKeyPressed = true;
 			// console.log('Shift键被按下');
@@ -88,7 +97,7 @@ window.onload = function() {
 		}
 	});
 
-	document.addEventListener('keyup', function(event) {
+	document.addEventListener('keyup', function (event) {
 		if (!event.shiftKey) {
 			shiftKeyPressed = false;
 			// console.log('Shift键被释放');
@@ -110,14 +119,14 @@ window.onload = function() {
 	var that = this;
 	//listen file choosing and open 监听文件选择
 	var this_e = document.getElementById('choose_file');
-	this_e.addEventListener('change', function(e) {
+	this_e.addEventListener('change', function (e) {
 		setFileAnnotation(this_e, e);
 		this_e.value = null;
 	});
 
 	var inputElement = document.getElementById("image_insert");
 	// console.log('加载图片');
-	inputElement.addEventListener('change', function(ev) {
+	inputElement.addEventListener('change', function (ev) {
 		// console.log('插入图片');
 		onlaodImgToInsert(ev);
 		inputElement.value = null;
@@ -125,7 +134,7 @@ window.onload = function() {
 
 	//ban mouse right click 禁止在菜单上的默认右键事件
 	var my_menu = document.getElementById('my-menu');
-	my_menu.oncontextmenu = function(e) {
+	my_menu.oncontextmenu = function (e) {
 		e.preventDefault()
 	}
 
@@ -150,8 +159,8 @@ window.onload = function() {
 	listenDrag("my_annotation_history");
 }
 
-window.onresize = function() { //监听屏幕的改变
-	setTimeout(function() {
+window.onresize = function () { //监听屏幕的改变
+	setTimeout(function () {
 		JSplump.refreshConnections();
 	}, 100)
 };

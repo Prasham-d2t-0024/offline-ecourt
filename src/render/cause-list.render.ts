@@ -8,7 +8,7 @@ function openPdfInNewTab(pdfPath: string) {
   //   `/pdfviewer.html?file=` +
   //   encodeURIComponent(pdfPath);
 
-  pdfPath = "/pdfs/sample.pdf";
+  // pdfPath = "/pdfs/sample.pdf";
   const url =
     `/pdfviewer.html?file=` +
     encodeURIComponent(pdfPath);
@@ -126,7 +126,7 @@ function renderRow(row: any) {
               <div>
                 <span
                   class="spanclik"
-                  onclick="openCase('${row.main_case_no}')"
+                  onclick="openCase('${row.cino}')"
                 >
                   ${row.main_case_no}
                 </span>

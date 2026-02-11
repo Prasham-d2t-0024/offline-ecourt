@@ -28,7 +28,7 @@
 
     <iframe id="viewerFrame"></iframe>
 
-    <script>
+    <!-- <script>
         const params = new URLSearchParams(window.location.search);
         const file = params.get('file');
 
@@ -40,6 +40,130 @@
                 encodeURIComponent(file);
 
             document.getElementById('viewerFrame').src = viewerUrl;
+
+            iframe.onload = async function () {
+
+                try {
+                    const response = await fetch('/data/annotation.json');
+                    const annotationData = await response.json();
+
+                    // Store each key into localStorage
+                    Object.keys(annotationData).forEach(key => {
+                        localStorage.setItem(key, annotationData[key]);
+                    });
+
+                    console.log('Annotation data injected into localStorage');
+
+                } catch (err) {
+                    console.error('Failed to load annotation JSON:', err);
+                }
+            };
+        }
+    </script> -->
+
+
+    <!-- <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+
+        if (!file) {
+            document.body.innerHTML = '<h3>No PDF file specified</h3>';
+        } else {
+
+            const viewerUrl =
+                '/pdfjs/web/viewer.html?file=' +
+                encodeURIComponent(file);
+
+            const iframe = document.getElementById('viewerFrame');
+
+            iframe.onload = async function () {
+                console.log("Viewer iframe loaded");
+
+                try {
+                    const response = await fetch('/data/annotation.json');
+                    const annotationData = await response.json();
+
+                    Object.keys(annotationData).forEach(key => {
+                        localStorage.setItem(key, annotationData[key]);
+                    });
+
+                    console.log('Annotation data injected into localStorage');
+
+                } catch (err) {
+                    console.error('Failed to load annotation JSON:', err);
+                }
+            };
+
+            iframe.src = viewerUrl;
+        }
+    </script> -->
+
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+
+        if (!file) {
+            document.body.innerHTML = '<h3>No PDF file specified</h3>';
+        } else {
+
+            const viewerUrl =
+                '/pdfjs/web/viewer.html?file=' +
+                encodeURIComponent(file);
+
+            const iframe = document.getElementById('viewerFrame');
+
+            iframe.onload = async function () {
+
+                try {
+                    const response = await fetch('/data/annotation.json');
+                    const apiData = await response.json();
+
+                    if (!apiData.pdfannotationStr) {
+                        console.log("No annotation data found");
+                        return;
+                    }
+
+                    // 🔥 STEP 1: Parse main string
+                    let parsed = apiData.pdfannotationStr;
+                    while (typeof parsed !== 'object') {
+                        parsed = JSON.parse(parsed);
+                    }
+
+                    // parsed is now array of stringified page objects
+
+                    parsed.forEach(pageString => {
+
+                        let pageObj = pageString;
+
+                        // 🔥 STEP 2: Parse each page object
+                        while (typeof pageObj !== 'object') {
+                            pageObj = JSON.parse(pageObj);
+                        }
+
+                        // 🔥 STEP 3: Extract page number
+                        const match = pageObj.page_id.match(/\d+/);
+                        if (!match) return;
+
+                        const pageNumber = match[0];
+
+                        // 🔥 STEP 4: Build exact key like Angular
+                        const storageKey = file + '_page_fabric_' + pageNumber;
+
+                        localStorage.setItem(
+                            storageKey,
+                            JSON.stringify(pageObj)
+                        );
+
+                        console.log("Stored annotation for page:", pageNumber);
+                    });
+
+                } catch (err) {
+                    console.error("Annotation load failed:", err);
+                }
+            };
+
+            iframe.src = viewerUrl;
         }
     </script>
 

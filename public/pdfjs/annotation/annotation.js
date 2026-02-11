@@ -566,7 +566,7 @@ pdfwheel.Annotation.prototype.drawAnnotationOnFabricPageFirstTime = function (th
 			// that.saveAllFabricData();
 		});
 	} else {
-		var current_canvas_page_id = PDFViewerApplication.baseUrl + '_page_' + page_number;
+		var current_canvas_page_id = PDFViewerApplication.baseUrl + '_page_fabric_' + page_number;
 		var annotations_json = this.readAnnotationsForPage(current_canvas_page_id);
 		if (annotations_json != null && annotations_json.length > 0) {
 			for (var j = 0; j < annotations_json.length; j++) {
@@ -885,9 +885,7 @@ pdfwheel.Annotation.prototype.saveFabricCanvas = function (page_number) {
 		]
 	}[this.tips_language];
 	var page_id = this.fabric_annos_id_tag + page_number.toString();
-	console.log('Fabric', page_number);
-	const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	var fabric_annotation_id = pdfURL.split("?")[0] + '_page_fabric_' + page_number.toString();
+	var fabric_annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_fabric_' + page_number.toString();
 
 	var saved_data = this.fabric_list[page_id];
 	saved_data['page_canvas']['fabric_canvas_json'] = saved_data['page_canvas']['fabric_canvas'].toJSON(
@@ -942,8 +940,7 @@ pdfwheel.Annotation.prototype.saveFabricCanvas = function (page_number) {
 
 //read one Fabric page annotations  读取页面的 Fabric 批注
 pdfwheel.Annotation.prototype.readFabricAnnotationsForPage = function (page_number) {
-	const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	var this_page_id = pdfURL?.split("?")[0] + '_page_fabric_' + page_number.toString();
+	var this_page_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_fabric_' + page_number.toString();
 	var this_page_annotation = null;
 	if (localStorage.getItem(this_page_id) !== null) {
 		try {
@@ -1438,9 +1435,8 @@ pdfwheel.Annotation.prototype.changeOneCanvasSelectState = function (current_can
 
 //set annotation for current file 为当前页面设置批注
 pdfwheel.Annotation.prototype.setOnePageAnnotation = function (page_content, page_number) {
-	const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	var annotation_id = pdfURL.split("?")[0] + '_page_' + page_number.toString();
-	var fabric_annotation_id = pdfURL.split("?")[0] + '_page_fabric_' + page_number.toString();
+	var annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + page_number.toString();
+	var fabric_annotation_id = PDFViewerApplication.baseUrl.split("?")[0] + '_page_fabric_' + page_number.toString();
 	var old_anno_content;
 	var content;
 
@@ -1504,9 +1500,8 @@ pdfwheel.Annotation.prototype.readFileAnnotations = function () {
 		}
 	}
 	// console.log(this_file_annotations);
-	const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	if (localStorage.getItem(pdfURL.split("?")[0] + '/myAnnotation') !== JSON.stringify(this_file_annotations)) {
-		localStorage.setItem(pdfURL.split("?")[0] + '/myAnnotation', JSON.stringify(this_file_annotations));
+	if (localStorage.getItem(this.PDFViewerApplication.baseUrl.split("?")[0] + '/myAnnotation') !== JSON.stringify(this_file_annotations)) {
+		localStorage.setItem(this.PDFViewerApplication.baseUrl.split("?")[0] + '/myAnnotation', JSON.stringify(this_file_annotations));
 	}
 	return this_file_annotations;
 }
@@ -1643,15 +1638,14 @@ pdfwheel.Annotation.prototype.clearAnnotationFromPageLocalStorage = function (pa
 		old_fabric_obj['page_annotations'] = [];
 
 		//设置fabric缓存
-		const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-		var fabric_annotation_id = pdfURL.split("?")[0] + '_page_fabric_' + page_number.toString();
+		var fabric_annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_fabric_' + page_number.toString();
 		var content = JSON.stringify(old_fabric_obj);
 		if (localStorage.getItem(fabric_annotation_id) !== content) {
 			localStorage.setItem(fabric_annotation_id, content);
 		}
 
 		//设置旧版缓存
-		var annotation_id = pdfURL.split("?")[0] + '_page_' + page_number.toString();
+		var annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + page_number.toString();
 		var old_anno_content = JSON.stringify([]);
 		if (localStorage.getItem(annotation_id) !== old_anno_content) {
 			localStorage.setItem(annotation_id, old_anno_content);
@@ -1752,6 +1746,7 @@ pdfwheel.Annotation.prototype.old_undoAnnotation = function () {
 
 //delete annotation 删除批注
 pdfwheel.Annotation.prototype.deleteAnnotation = function (node) {
+	debugger;
 	var tips = {
 		'zh-cn': [
 			'第 ',
@@ -1916,9 +1911,7 @@ pdfwheel.Annotation.prototype.clearPageAnnotations = function (node) {
 //save Fabric data to localStorage(limit file size 5MB) 保存fabric数据到缓存，大小不能超过 5MB
 pdfwheel.Annotation.prototype.saveFabricCanvasAfterClearPage = function (page_number, old_fabric_obj) {
 	var page_id = this.fabric_annos_id_tag + page_number.toString();
-
-	var pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	var fabric_annotation_id = pdfURL.split("?")[0] + '_page_fabric_' + page_number.toString();
+	var fabric_annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_fabric_' + page_number.toString();
 
 	var saved_data = this.fabric_list[page_id];
 	saved_data['page_canvas']['fabric_canvas_json'] = saved_data['page_canvas']['fabric_canvas'].toJSON(
@@ -2713,9 +2706,8 @@ pdfwheel.Highlight.prototype.getMouseUpPos = function () {
 			this.stop_process_annotation = false;
 			this.initAnnotation(); //初始化高亮对象
 
-			var pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-			var highlight_page_id = pdfURL.split("?")[0] + '_page_' + data_page_number;
-			this.annotation_id = pdfURL.split("?")[0] + '_page_' + data_page_number;
+			var highlight_page_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + data_page_number;
+			this.annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + data_page_number;
 			//逻辑迁移至viewer.js中，生成页面时即添加id
 			// this.addIdForTextLayerSpan(this_page);
 			// console.log('当前页面数字',data_page_number);
@@ -3320,9 +3312,8 @@ pdfwheel.Highlight.prototype.judgeOnePage = function (Range) {
 
 	text_layer = this_page.getElementsByClassName('textLayer')[0];
 
-	var pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	var highlight_page_id = pdfURL.split("?")[0] + '_page_' + data_page_number;
-	this.annotation_id = pdfURL.split("?")[0] + '_page_' + data_page_number;
+	var highlight_page_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + data_page_number;
+	this.annotation_id = this.PDFViewerApplication.baseUrl.split("?")[0] + '_page_' + data_page_number;
 	//逻辑迁移至viewer.js中，生成页面时即添加id
 	// this.addIdForTextLayerSpan(this_page);
 	return {
@@ -4125,8 +4116,7 @@ function addScatchPadToAnnotation(node) {
 	var node_id = node.parentNode.getAttribute('id');
 	console.log(node_id);
 	localStorage.removeItem('addednote');
-	const pdfURL = localStorage.getItem(this.PDFViewerApplication.baseUrl);
-	localStorage.setItem('addednote', pdfURL.split("?")[0] + '?' + node_id)
+	localStorage.setItem('addednote', this.PDFViewerApplication.baseUrl.split("?")[0] + '?' + node_id)
 
 }
 

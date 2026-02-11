@@ -1931,6 +1931,7 @@ const PDFViewerApplication = {
     await Promise.all(promises);
   },
   async open(file, args) {
+    debugger;
     if (this.pdfLoadingTask) {
       await this.close();
     }
