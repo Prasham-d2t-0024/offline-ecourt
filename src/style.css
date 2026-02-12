@@ -108,8 +108,8 @@ ul {
 .liEcourt {
   border-radius: 0.25rem;
   text-align: left !important;
-  border-right: 4px solid #0060a2;
-  border-left: 4px solid #0060a2;
+  /* border-right: 4px solid #0060a2;
+  border-left: 4px solid #0060a2; */
 }
 
 .calander {
@@ -545,4 +545,12 @@ ds-canvas-manager.canvses.ng-star-inserted {
 
 .link-color {
   color: #207698;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.word-break-all {
+  word-break: break-all;
 }

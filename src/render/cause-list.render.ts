@@ -17,20 +17,182 @@ function openPdfInNewTab(pdfPath: string) {
 }
 (window as any).openPdfInNewTab = openPdfInNewTab;
 
+
+// Helper to strip HTML from strings if needed, though renderRow usually handles it.
+function matchEstiCode(cino: string): string {
+  if (!cino) return '';
+  return cino.startsWith('WBCHCO') ? 'WBCHCO' : 'WBCHCA';
+}
+
 export function renderCauseList(list: any[], title?: any): string {
   if (!list || !list.length) {
     return `<p>No cause list available</p>`;
   }
 
+  // 1. Separate Main and Connected Cases
+  // Main cases: link_main_sr_no is undefined/null/empty
+  const mainCases = list.filter(item => !item.link_main_sr_no);
+
+  // Connected cases: have link_main_sr_no
+  const connectedCasesList = list.filter(item => item.link_main_sr_no);
+
+  // 2. Map connected cases to their parent (Main) case
+  const casesWithConnected = mainCases.map(main => {
+    // Find children where link_main_sr_no matches main.sr_no
+    // Ensure accurate type comparison (e.g. Number vs String)
+    const children = connectedCasesList.filter(
+      c => Number(c.link_main_sr_no) === Number(main.sr_no)
+    );
+    return { ...main, connectedCases: children };
+  });
+
+  // 3. Group the *main* cases (which now contain their children)
+  const grouped = groupByPurpose(casesWithConnected);
+
   return `
     <div class="container-fluid pt-3">
       ${title ? renderCauseListHeader(title) : ''}
       <div class="content-container">
-        ${list.map(renderRow).join('')}
+        ${Object.keys(grouped).map((purpose, index) =>
+    renderPurposeSection(purpose, grouped[purpose], index)
+  ).join('')}
       </div>
     </div>
   `;
 }
+
+function groupByPurpose(list: any[]) {
+  return list.reduce((acc, item) => {
+    const key = item.purpose_name || 'OTHER MATTERS';
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
+    return acc;
+  }, {} as Record<string, any[]>);
+}
+
+function renderPurposeSection(purpose: string, rows: any[], index: number) {
+  return `
+    <div class="mb-4">
+      <!-- Purpose Header -->
+      <div class="text-center mb-3">
+         <h5 class="font-weight-bold"><u>${purpose}</u></h5>
+      </div>
+
+      ${index === 0 ? `
+        <!-- Column Headers (Bold, No Borders) -->
+        <div class="row mx-0 mb-2 px-3">
+          <div class="font-weight-bold">Sr No</div>
+          <div class="col-3 font-weight-bold">Case Number</div>
+          <div class="col-4 font-weight-bold">Main Parties</div>
+          <div class="col-3 font-weight-bold">Petitioner Advocate</div>
+          <div class="font-weight-bold">Respondent Advocate</div>
+        </div>
+      ` : ''}
+
+      <!-- Rows with Original UI -->
+      ${rows.map((row, i) => renderRow(row, i + 1)).join('')}
+    </div>
+  `;
+}
+
+function renderRow(row: any, srNo: number) {
+  // Parsing IA String Logic
+  const getIADisplay = (data: any) => {
+    if (data.if_listed_as_IA_string && data.if_listed_as_IA_string.length > 0) {
+      const parts = data.if_listed_as_IA_string.split(' in ');
+      if (parts[0]) {
+        // return `IA NO. ${parts[0]} <br> <span class="ml-4"> In </span>`;
+        return `IA NO. ${parts[0]}`;
+      }
+    }
+    return '';
+  };
+
+  // Helper to render a single case block (Main or Connected)
+  // We use this for the Main parts inside the row
+  const renderContent = (data: any, isConnected: boolean = false, displaySrNo: any) => {
+    const estiCode = matchEstiCode(data.cino);
+    // Logic: If connected, use "wt"/"in" prefix AND the connected case's own sr_no
+    const prefixStr = isConnected ? (estiCode === 'WBCHCO' ? 'wt' : estiCode == 'WBCHCA' ? 'in' : '') : '';
+    // Display: "in 1)" or "29)"
+    const finalDisplay = isConnected
+      ? `${prefixStr} ` + (displaySrNo ? `${displaySrNo})` : '')
+      : displaySrNo != '' ? `${displaySrNo})` : '';
+
+    const getIADisplayResult = getIADisplay(data);
+
+    return `
+      <!-- Added pl-4 for connected cases alignment -->
+      <div class="row mx-0 ${isConnected ? 'mt-2' : ''}">
+        
+        <!-- Sr No / Prefix -->
+        <div class="font-weight-bolder">
+           ${finalDisplay}
+        </div>
+
+        <!-- Case Number + IA + Actions -->
+        <div class="col-3">
+            <!-- Case Link -->
+            <span class="spanclik font-weight-bold" 
+                  style="cursor: pointer; color: #343a40;"
+                  onclick="openCase('${data.cino}')">
+               ${data.main_case_no}
+            </span>
+            
+            <!-- Specific IA Listing -->
+            ${getIADisplayResult ? `<br><div class="text-muted small mt-1">${getIADisplayResult}</div>` : ''}
+
+            <!-- All IA String (Moved from footer) -->
+            ${data.all_IA_string && data.all_IA_string.length > 0
+        ? `<br><div class="text-muted small mt-1">IA NO: ${data.all_IA_string}</div>`
+        : ''}
+
+            <!-- Removed Action Dropdown as per request -->
+            
+            ${data.case_remark ? `<br><p class="m-0 text-muted small">${data.case_remark}</p>` : ''}
+        </div>
+
+        <!-- Main Parties -->
+        <div class="col-4">
+             ${data.pet_name} 
+             ${data.petitionerorganization ? `(${data.petitionerorganization})` : ''}
+             <br><b class="font-italic"> Vs </b><br>
+             ${data.res_name}
+             ${data.respondentorganization ? `(${data.respondentorganization})` : ''}
+        </div>
+
+        <!-- Petitioner Advocate -->
+        <div class="col-3">
+             <span [innerHTML]="${data.pet_adv}">${data.pet_adv || ''}</span>
+        </div>
+
+        <!-- Respondent Advocate -->
+        <div class="word-break-all">
+             <span [innerHTML]="${data.res_adv}">${data.res_adv || ''}</span>
+        </div>
+      </div>
+  `;
+  };
+
+  return `
+    <div style="box-shadow: 0 0 5px rgba(0, 0, 0, .5); margin: 8px 4px;" class="rowEcourt mb-2">
+      <ul class="pl-4">
+        <li class="liEcourt px-3">
+          
+          <!-- MAIN CASE -->
+          ${renderContent(row, false, row.sr_no)}
+
+          <!-- CONNECTED CASES -->
+          ${row.connectedCases && row.connectedCases.length > 0
+      ? row.connectedCases.map((conn: any) => renderContent(conn, true, conn.sr_no)).join('')
+      : ''}
+
+        </li>
+      </ul>
+    </div>
+  `;
+}
+
 
 
 function renderCauseListHeader(title: any): string {
@@ -109,62 +271,6 @@ function renderCauseListHeader(title: any): string {
   `;
 }
 
-function renderRow(row: any) {
-  const caseNo = row.main_case_no || '';
-  const iaCase = row.if_listed_as_IA_string || '';
-  const purpose = row.purpose_name || '';
-
-  return `
-    <div class="rowEcourt mb-2">
-      <ul>
-        <li class="liEcourt px-3">
-
-          <div class="d-flex justify-content-between align-items-start">
-
-            <!-- LEFT: Item + Case -->
-            <div class="groupbody">
-              <div>
-                <span
-                  class="spanclik"
-                  onclick="openCase('${row.cino}')"
-                >
-                  ${row.main_case_no}
-                </span>
-
-                ${iaCase ? `
-                  <span class="dot-sm mx-1">•</span>
-                  <span class="spanclik">${iaCase}</span>
-                ` : ''}
-              </div>
-
-              <!-- Petitioner / Respondent -->
-              <div class="trim-info mt-1">
-                <strong>${row.pet_name || ''}</strong>
-                <span class="dot-sm mx-1">•</span>
-                <strong>${row.res_name || ''}</strong>
-              </div>
-
-              <!-- Advocates -->
-              <div class="trim-info text-muted">
-                ${row.pet_adv || '—'}
-                ${row.res_adv ? ' / ' + row.res_adv : ''}
-              </div>
-            </div>
-
-            <!-- RIGHT: Purpose -->
-            <div class="text-end">
-              <span class="badge bg-light text-dark">
-                ${purpose}
-              </span>
-            </div>
-
-          </div>
-
-        </li>
-      </ul>
-    </div>
-  `;
-}
 
 // function renderCases(tabs: any[]): string {
 //     return tabs.map((case2, index) => `

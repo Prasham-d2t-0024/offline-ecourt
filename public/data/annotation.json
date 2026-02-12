@@ -1,6 +1,6 @@
 {
-    "id": "78422b54-8089-47b9-8df9-1d6bf4bfaf0b",
-    "uuid": "78422b54-8089-47b9-8df9-1d6bf4bfaf0b",
+    "id": "23f9d116-eee3-4c6a-be90-63139e1a9320",
+    "uuid": "23f9d116-eee3-4c6a-be90-63139e1a9320",
     "name": null,
     "handle": null,
     "metadata": {},
@@ -34,16 +34,16 @@
     "type": "pdfnnnotation",
     "_links": {
         "bitstreamRest": {
-            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/78422b54-8089-47b9-8df9-1d6bf4bfaf0b/bitstreamRest"
+            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/23f9d116-eee3-4c6a-be90-63139e1a9320/bitstreamRest"
         },
         "ePersonRest": {
-            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/78422b54-8089-47b9-8df9-1d6bf4bfaf0b/ePersonRest"
+            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/23f9d116-eee3-4c6a-be90-63139e1a9320/ePersonRest"
         },
         "itemRest": {
-            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/78422b54-8089-47b9-8df9-1d6bf4bfaf0b/itemRest"
+            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/23f9d116-eee3-4c6a-be90-63139e1a9320/itemRest"
         },
         "self": {
-            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/78422b54-8089-47b9-8df9-1d6bf4bfaf0b"
+            "href": "https://lab.d2t.co/serverjnk/api/PdfAnnotation/pdfnnnotations/23f9d116-eee3-4c6a-be90-63139e1a9320"
         }
     },
     "_embedded": {

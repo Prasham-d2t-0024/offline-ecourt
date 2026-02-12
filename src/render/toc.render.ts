@@ -180,7 +180,10 @@
         activeRow.classList.add('toc-row-active');
     }
 
-    const pdfPath = `/pdfs/${bitstreamId}.pdf`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const cino = urlParams.get('cino');
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+    const pdfPath = `${baseUrl}/api/jocd/${cino}/${bitstreamId}`;
     // const pdfPath = `/pdfs/sample.pdf`;
     iframe.src = `/pdfviewer.html?file=` + encodeURIComponent(pdfPath);
 };
@@ -197,9 +200,68 @@ function findFirstLeaf(nodeList: any[]): any | null {
     return null;
 }
 
+
 function renderTOCNode(node: any): string {
     const hasChildren = node.children && node.children.length > 0;
-    const isLeaf = !!node.bitstream;
+
+    // Determine display text and click behavior based on conditions
+    let displayText = '';
+    let isClickable = false;
+    let clickAction = '';
+    let tooltip = '';
+
+    const { isTemplet, isSubchild, desc, bitstream, doc_date, documentType } = node;
+    const docName = documentType?.documenttypename || '';
+    const dateStr = doc_date ? new Date(doc_date).toLocaleDateString('en-GB') : ''; // dd/mm/yyyy
+
+    // CASE A: !isTemplet && desc == null && !isSubchild (e.g. Orders with date only)
+    if (!isTemplet && !desc && !isSubchild) {
+        displayText = dateStr;
+        isClickable = true;
+        clickAction = `openTocPdf('${bitstream?.id}', '${node.id}')`;
+    }
+    // CASE B: !isTemplet && isSubchild && bitstream != null
+    else if (!isTemplet && isSubchild && bitstream) {
+        displayText = docName;
+        isClickable = true;
+        clickAction = `openTocPdf('${bitstream.id}', '${node.id}')`;
+    }
+    // CASE C: !isTemplet && !isSubchild && desc != null (e.g. Orders with description)
+    else if (!isTemplet && !isSubchild && desc) {
+        displayText = desc;
+        tooltip = desc;
+        isClickable = true;
+        clickAction = `openTocPdf('${bitstream?.id}', '${node.id}')`;
+    }
+    // CASE D: !isTemplet && isSubchild && desc != null && bitstream == null (Folder-like)
+    else if (!isTemplet && isSubchild && desc && !bitstream) {
+        displayText = desc;
+        tooltip = desc;
+        isClickable = true; // Expandable
+        clickAction = `toggleNode('${node.id}')`;
+    }
+    // CASE E: children > 0 && isTemplet && bitstream == null (Folder-like Template)
+    else if (hasChildren && isTemplet && !bitstream) {
+        displayText = docName;
+        isClickable = true; // Expandable
+        clickAction = `toggleNode('${node.id}')`;
+    }
+    // CASE F: isTemplet && bitstream != null
+    else if (isTemplet && bitstream) {
+        displayText = docName;
+        isClickable = true;
+        clickAction = `openTocPdf('${bitstream.id}', '${node.id}')`;
+    }
+    // FALLBACK
+    else {
+        displayText = desc || docName || dateStr || 'Document';
+        if (bitstream) {
+            isClickable = true;
+            clickAction = `openTocPdf('${bitstream.id}', '${node.id}')`;
+        }
+    }
+
+    const isLeaf = !!bitstream;
 
     return `
         <li class="rowEcourt mb-1" id="row-${node.id}" style="${!isLeaf ? 'background-color: #FFF;' : 'background-color: #f0f8ff;'}">
@@ -216,13 +278,23 @@ function renderTOCNode(node: any): string {
             ${hasChildren ? '▸' : ''}
             </span>
 
+
+            <!-- Icon (for non-templates) using Inline SVG -->
+            ${!isTemplet ? `
+            <span class="mr-2 text-muted">
+                <svg viewBox="0 0 384 512" width="12" height="12" fill="currentColor" style="display:inline-block;vertical-align:middle;color: #3077b5;">
+                    <path d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zm384 64H256V0L384 128z"/>
+                </svg>
+            </span>` : ''}
+
             <!-- Label -->
             <span
-            class="${isLeaf ? 'spanclik' : 'link-color'}"
-            style="${isLeaf ? 'cursor:pointer;font-size:14px;' : 'font-size:16px;'}"
-            ${isLeaf ? `onclick="openTocPdf('${node.bitstream.id}', '${node.id}')"` : ''}
+            class="${isClickable ? 'spanclik' : ''}"
+            style="${isClickable ? 'cursor:pointer;font-size:14px;' : 'font-size:16px;'}"
+            ${isClickable ? `onclick="${clickAction}"` : ''}
+            ${tooltip ? `title="${tooltip}"` : ''}
             >
-            ${node.desc || node.documentType?.documenttypename || ''}
+            ${displayText}
             </span>
 
         </div>
@@ -241,6 +313,7 @@ function renderTOCNode(node: any): string {
         </li>
     `;
 }
+
 
 function renderTOCTree(nodes: any[]): string {
     if (!nodes || !nodes.length) return '';
