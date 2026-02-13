@@ -359,7 +359,7 @@ export function renderTOCPage(
   <div class="row m-0 p-0" style="height:100vh">
 
     <!-- LEFT 30% -->
-    <div class="col-3 p-0 border-end">
+    <div class="col-3 p-0 border-end" id="tocColumn">
 
       <ul class="nav nav-tabs">
         <li class="nav-item cursor fw-600">
@@ -379,7 +379,14 @@ export function renderTOCPage(
     </div>
 
     <!-- RIGHT 70% (Split View Container) -->
-    <div class="col-9 p-0 d-flex" id="pdfContainer">
+    <div class="col-9 p-0 d-flex position-relative" id="pdfContainer">
+
+      <!-- Toggle Button -->
+      <div id="tocToggleBtn" class="toc-toggle-btn" onclick="toggleTOC()" title="Toggle Table of Contents">
+        <svg id="tocToggleIcon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </div>
       
       <!-- Viewer 1 -->
       <div id="viewer1" style="width:100%; height:100%; transition: width 0.3s ease; display:flex; flex-direction:column; border-right:1px solid #dee2e6;">
@@ -511,4 +518,33 @@ export function renderTOCPage(
         window.event.cancelBubble = true;
         window.event.stopPropagation();
     }
+};
+
+(window as any).toggleTOC = () => {
+    const tocCol = document.getElementById('tocColumn');
+    const pdfContainer = document.getElementById('pdfContainer');
+    const toggleIcon = document.getElementById('tocToggleIcon');
+
+    if (tocCol && pdfContainer && toggleIcon) {
+        const iconPath = toggleIcon.querySelector('path');
+        if (tocCol.classList.contains('d-none')) {
+            // SHOW TOC
+            tocCol.classList.remove('d-none');
+            pdfContainer.classList.remove('col-12');
+            pdfContainer.classList.add('col-9');
+            if (iconPath) iconPath.setAttribute('d', 'M15 18l-6-6 6-6'); // Left Chevron
+        } else {
+            // HIDE TOC
+            tocCol.classList.add('d-none');
+            pdfContainer.classList.remove('col-9');
+            pdfContainer.classList.add('col-12');
+            if (iconPath) iconPath.setAttribute('d', 'M9 18l6-6-6-6'); // Right Chevron
+        }
+    }
+
+    // Trigger resize for viewers if needed (optional but good for some PDF libs)
+    // The CSS transition might need a moment
+    setTimeout(() => {
+        // Force reflow/resize check if needed by PDF viewer
+    }, 300);
 };

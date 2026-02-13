@@ -602,3 +602,33 @@ ds-canvas-manager.canvses.ng-star-inserted {
   font-size: 19px;
   line-height: 1;
 }
+
+.toc-toggle-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 160px;
+  background: #207698;
+  border: 1px solid #1a5b75;
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: background 0.2s, width 0.2s;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.toc-toggle-btn:hover {
+  background: #1a5b75;
+  width: 22px;
+}
+
+.toc-toggle-btn i {
+  font-size: 14px;
+  color: #fff;
+}
