@@ -537,9 +537,11 @@ ds-canvas-manager.canvses.ng-star-inserted {
   cursor: pointer;
 }
 
-.toc-row-active {
+.toc-row-active,
+.toc-row-active-1,
+.toc-row-active-2 {
   background-color: #c7deef;
-  border-left: 3px solid #0060a2;
+  border-left: 3px solid #cf4444;
   font-weight: 650;
 }
 
@@ -551,6 +553,52 @@ ds-canvas-manager.canvses.ng-star-inserted {
   font-weight: 500;
 }
 
+.fw-600 {
+  font-weight: 600;
+}
+
+.fw-650 {
+  font-weight: 650;
+}
+
 .word-break-all {
   word-break: break-all;
+}
+
+/* Viewer Header Styles */
+.viewer-header-container {
+  height: 35px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 10px;
+}
+
+.viewer-header-tab {
+  background: #d6eaff;
+  padding: 5px 10px;
+  border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  border: 1px solid #dee2e6;
+  border-bottom: none;
+  max-width: 100%;
+}
+
+.viewer-header-title {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+  color: #207698;
+  font-weight: 650;
+}
+
+.viewer-close-btn {
+  width: 20px;
+  height: 18px;
+  font-size: 19px;
+  line-height: 1;
 }
