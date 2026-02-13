@@ -184,7 +184,6 @@
     const cino = urlParams.get('cino');
     const baseUrl = import.meta.env.VITE_API_BASE_URL;
     const pdfPath = `${baseUrl}/api/jocd/${cino}/${bitstreamId}`;
-    // const pdfPath = `/pdfs/sample.pdf`;
     iframe.src = `/pdfviewer.html?file=` + encodeURIComponent(pdfPath);
 };
 

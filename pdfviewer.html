@@ -35,77 +35,6 @@
         if (!file) {
             document.body.innerHTML = '<h3>No PDF file specified</h3>';
         } else {
-            const viewerUrl =
-                '/pdfjs/web/viewer.html?file=' +
-                encodeURIComponent(file);
-
-            document.getElementById('viewerFrame').src = viewerUrl;
-
-            iframe.onload = async function () {
-
-                try {
-                    const response = await fetch('/data/annotation.json');
-                    const annotationData = await response.json();
-
-                    // Store each key into localStorage
-                    Object.keys(annotationData).forEach(key => {
-                        localStorage.setItem(key, annotationData[key]);
-                    });
-
-                    console.log('Annotation data injected into localStorage');
-
-                } catch (err) {
-                    console.error('Failed to load annotation JSON:', err);
-                }
-            };
-        }
-    </script> -->
-
-
-    <!-- <script>
-        const params = new URLSearchParams(window.location.search);
-        const file = params.get('file');
-
-        if (!file) {
-            document.body.innerHTML = '<h3>No PDF file specified</h3>';
-        } else {
-
-            const viewerUrl =
-                '/pdfjs/web/viewer.html?file=' +
-                encodeURIComponent(file);
-
-            const iframe = document.getElementById('viewerFrame');
-
-            iframe.onload = async function () {
-                console.log("Viewer iframe loaded");
-
-                try {
-                    const response = await fetch('/data/annotation.json');
-                    const annotationData = await response.json();
-
-                    Object.keys(annotationData).forEach(key => {
-                        localStorage.setItem(key, annotationData[key]);
-                    });
-
-                    console.log('Annotation data injected into localStorage');
-
-                } catch (err) {
-                    console.error('Failed to load annotation JSON:', err);
-                }
-            };
-
-            iframe.src = viewerUrl;
-        }
-    </script> -->
-
-
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const file = params.get('file');
-
-        if (!file) {
-            document.body.innerHTML = '<h3>No PDF file specified</h3>';
-        } else {
 
             const viewerUrl =
                 '/pdfjs/web/viewer.html?file=' +
@@ -124,7 +53,7 @@
                         return;
                     }
 
-                    // 🔥 STEP 1: Parse main string
+                    // STEP 1: Parse main string
                     let parsed = apiData.pdfannotationStr;
                     while (typeof parsed !== 'object') {
                         parsed = JSON.parse(parsed);
@@ -165,7 +94,147 @@
 
             iframe.src = viewerUrl;
         }
+    </script> -->
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const file = params.get('file');
+        const bitstreamId = params.get('bitstream');
+        // const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
+        if (!file) {
+            document.body.innerHTML = '<h3>No PDF file specified</h3>';
+        } else {
+
+            const viewerUrl =
+                '/pdfjs/web/viewer.html?file=' +
+                encodeURIComponent(file);
+
+            const iframe = document.getElementById('viewerFrame');
+
+            iframe.onload = async function () {
+
+                try {
+
+                    const response = await fetch(
+                        `${file}/annotation`
+                    );
+
+                    const apiData = await response.json();
+
+                    if (!apiData.pdfannotationStr ||
+                        apiData.pdfannotationStr === "{}") {
+                        console.log("No annotation data found");
+                        return;
+                    }
+
+                    // STEP 1: Parse main string
+                    let parsed = apiData.pdfannotationStr;
+                    while (typeof parsed !== 'object') {
+                        parsed = JSON.parse(parsed);
+                    }
+
+                    // parsed is now array of stringified page objects
+                    parsed.forEach(pageString => {
+
+                        let pageObj = pageString;
+
+                        while (typeof pageObj !== 'object') {
+                            pageObj = JSON.parse(pageObj);
+                        }
+
+                        const match = pageObj.page_id.match(/\d+/);
+                        if (!match) return;
+
+                        const pageNumber = match[0];
+
+                        const storageKey =
+                            file + '_page_fabric_' + pageNumber;
+
+                        localStorage.setItem(
+                            storageKey,
+                            JSON.stringify(pageObj)
+                        );
+
+                        console.log("Stored annotation:", storageKey);
+                    });
+
+                    // HANDLE TEXT ANNOTATIONS ALSO
+                    // if (apiData.textannotationstr &&
+                    //     apiData.textannotationstr !== "{}") {
+
+                    //     let textParsed = apiData.textannotationstr;
+
+                    //     while (typeof textParsed !== 'object') {
+                    //         textParsed = JSON.parse(textParsed);
+                    //     }
+
+                    //     textParsed.forEach(obj => {
+                    //         for (const key in obj) {
+
+                    //             let value = obj[key];
+
+                    //             while (typeof value !== 'object') {
+                    //                 value = JSON.parse(value);
+                    //             }
+
+                    //             const storageKey = file + key;
+
+                    //             localStorage.setItem(
+                    //                 storageKey,
+                    //                 JSON.stringify(value)
+                    //             );
+                    //         }
+                    //     });
+                    // }
+
+                    // Store UUID (Angular does this)
+                    if (apiData.uuid) {
+                        localStorage.setItem(file + '/uuid', apiData.uuid);
+                    }
+
+                } catch (err) {
+                    console.error("Annotation API load failed:", err);
+                }
+            };
+
+            iframe.src = viewerUrl;
+        }
     </script>
+
+    <script>
+        // Auto-save listener
+        window.addEventListener('storage', function (e) {
+            // Check if key is relevant and has a new value
+            if (e.key && e.key.includes('_page_fabric_') && e.newValue) {
+                const fileUrl = e.key.split('_page_fabric_')[0];
+                const url = fileUrl + '/annotation';
+
+                const payloadVal = JSON.stringify([e.newValue]);
+
+                const payload = {
+                    pdfannotationStr: payloadVal
+                };
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                }).then(res => {
+                    if (res.ok) {
+                        console.log('Auto-saved annotation successfully to', url);
+                    } else {
+                        console.error('Auto-save failed:', res.status, res.statusText);
+                    }
+                }).catch(err => {
+                    console.error('Auto-save error:', err);
+                });
+            }
+        });
+    </script>
+
 
 </body>
 

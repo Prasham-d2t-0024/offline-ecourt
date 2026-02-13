@@ -5,11 +5,11 @@ import type { CauseListResponse } from './types';
 import './styles/bootstrap.min.css';
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 // API Fetch Function
 async function fetchCauseList(): Promise<CauseListResponse> {
-  const response = await fetch(`${API_BASE_URL}/api/causelist/`);
+  const response = await fetch(`${VITE_API_BASE_URL}/api/causelist/`);
   if (!response.ok) throw new Error('API failed');
   return response.json();
 }

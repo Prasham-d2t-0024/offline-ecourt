@@ -4,27 +4,27 @@ import { renderTOCPage } from './render/toc.render';
 import type { JOCDResponse, DocumentTypeTree } from './types';
 
 // ---- API CONFIG ----
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const VITE_API_BASE_URL = import.meta.env.VITE_VITE_API_BASE_URL || 'http://localhost:8000';
 
 async function fetchJOCD(cino: string): Promise<JOCDResponse> {
-    const response = await fetch(`${API_BASE_URL}/api/jocd/${cino}`);
+    const response = await fetch(`${VITE_API_BASE_URL}/api/jocd/${cino}`);
     if (!response.ok) throw new Error('Failed to fetch JOCD');
     return response.json();
 }
 
 let tocTree: DocumentTypeTree[] = [];
-function openTocPdf(bitstreamId: string) {
-    const iframe = document.getElementById('pdfViewer') as HTMLIFrameElement;
-    const empty = document.getElementById('emptyPdf');
+// function openTocPdf(bitstreamId: string) {
+//     const iframe = document.getElementById('pdfViewer') as HTMLIFrameElement;
+//     const empty = document.getElementById('emptyPdf');
 
-    if (!iframe) return;
+//     if (!iframe) return;
 
-    iframe.src =
-        '/pdfviewer.html?file=' +
-        encodeURIComponent(`/pdfs/${bitstreamId}.pdf`);
+//     iframe.src =
+//         '/pdfviewer.html?file=' +
+//         encodeURIComponent(`/pdfs/${bitstreamId}.pdf`);
 
-    if (empty) empty.style.display = 'none';
-}
+//     if (empty) empty.style.display = 'none';
+// }
 
 
 let activeLeftTab: 'toc' | 'notes' = 'toc';
